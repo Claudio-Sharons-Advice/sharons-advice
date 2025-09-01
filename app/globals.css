@@ -12,12 +12,19 @@
   --font-mono: var(--font-geist-mono);
 }
 
-@media (prefers-color-scheme: dark) {
+@media (prefers-color-scheme: light) {
   :root {
     --background: #0a0a0a;
     --foreground: #ededed;
   }
 }
+
+@media print {
+  body { background: #fff !important; color: #000 !important; }
+  header, nav, .print\:hidden { display: none !important; }
+  main { max-width: 100% !important; padding: 0.5in !important; }
+}
+
 
 body {
   background: var(--background);
