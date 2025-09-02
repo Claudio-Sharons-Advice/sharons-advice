@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
-import PostHogProvider from "./components/PostHogProvider";
+import Link from "next/link";
+import PostHogProvider from "../components/PostHogProvider";
 import "./globals.css";
 
 const geistSans = Geist({ variable: "--font-geist-sans", subsets: ["latin"] });
@@ -24,10 +25,10 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <PostHogProvider>
           <header className="sticky top-0 z-10 border-b border-neutral-200 bg-white/90 backdrop-blur print:hidden">
             <nav className="mx-auto flex max-w-5xl items-center justify-between p-4">
-              <a href="/" className="font-semibold text-neutral-900">Sharon's Advice</a>
+              <Link href="/" className="font-semibold text-neutral-900">Sharon&apos;s Advice</Link>
               <div className="space-x-4">
-                <a href="/guides" className="text-neutral-700 hover:text-neutral-900">Guides</a>
-                <a href="/chat" className="text-neutral-700 hover:text-neutral-900">Chat</a>
+                <Link href="/guides" className="text-neutral-700 hover:text-neutral-900">Guides</Link>
+                <Link href="/chat" className="text-neutral-700 hover:text-neutral-900">Chat</Link>
               </div>
             </nav>
           </header>
