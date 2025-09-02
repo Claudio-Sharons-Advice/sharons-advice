@@ -1,27 +1,35 @@
-// middleware.ts
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from 'next/server';
 
-export function middleware(req: Request) {
-  // allow Next assets/APIs to pass if you want (optional)
-  const url = new URL(req.url);
-  const isAsset = url.pathname.startsWith("/_next") || url.pathname.startsWith("/favicon");
-  if (isAsset) return NextResponse.next();
-
-  const auth = process.env.BASIC_AUTH || ""; // format: user:pass
-  if (!auth) return NextResponse.next(); // if unset, no auth
-
-  const header = (req.headers.get("authorization") || "").split(" ")[1] || "";
-  const [user, pass] = Buffer.from(header, "base64").toString().split(":");
-  const [u, p] = auth.split(":");
-
-  if (user === u && pass === p) return NextResponse.next();
-
-  return new Response("Unauthorized", {
+export function middleware(request: NextRequest) {
+  // Check if user is authenticated
+  const auth = request.headers.get('authorization');
+  
+  if (!auth) {
+    return new Response('Authentication required', {
+      status: 401,
+      headers: {
+        'WWW-Authenticate': 'Basic realm="Secure Area"',
+      },
+    });
+  }
+  
+  // Simple password protection (username: admin, password: preview123)
+  const [scheme, encoded] = auth.split(' ');
+  const buffer = Buffer.from(encoded, 'base64');
+  const [username, password] = buffer.toString().split(':');
+  
+  if (username === 'admin' && password === 'preview123') {
+    return NextResponse.next();
+  }
+  
+  return new Response('Invalid credentials', {
     status: 401,
-    headers: { "WWW-Authenticate": 'Basic realm="Sharon\'s Advice (private)"' },
+    headers: {
+      'WWW-Authenticate': 'Basic realm="Secure Area"',
+    },
   });
 }
 
 export const config = {
-  matcher: ["/((?!_next|favicon.ico).*)"], // protect everything except Next's internals
+  matcher: '/((?!api|_next/static|_next/image|favicon.ico).*)',
 };
